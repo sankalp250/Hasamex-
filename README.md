@@ -6,6 +6,10 @@
 [![Vite](https://img.shields.io/badge/Vite-7.1-646CFF.svg?logo=vite)](https://vitejs.dev)
 [![Gemini](https://img.shields.io/badge/LLM-Gemini%202.5%20Flash-4285F4.svg?logo=google)](https://deepmind.google/technologies/gemini/)
 
+> 🚀 **Live Production Web Application:** [https://hasamex-omega.vercel.app/](https://hasamex-omega.vercel.app/)  
+> ⚡ **Backend API & Swagger Docs:** [https://hasamex-backend-s17e.onrender.com/docs](https://hasamex-backend-s17e.onrender.com/docs)  
+> 📦 **GitHub Repository:** [https://github.com/sankalp250/Hasamex-](https://github.com/sankalp250/Hasamex-)
+
 A production-grade Retrieval-Augmented Generation (RAG) platform purpose-built for the **Hasamex AI Engineer Case Study**. 
 
 The application ingests timestamped qualitative interview transcripts, synthesizes the 6 core interview-guide benchmarks across European healthcare markets, extracts verified verbatim quotes with source timestamps, performs comparative cross-interview analysis, and provides grounded question-answering with dynamic search scope filtering.
@@ -161,34 +165,36 @@ docker compose -f infra/docker-compose.yml up --build
 
 ---
 
-## Cloud Deployment Guide (Render & Vercel)
+## Cloud Deployment (Active Live Production)
 
-### Option A: Render (Backend) + Vercel (Frontend) — *Recommended*
+The project is live in production with decoupled frontend and backend services:
 
-#### 1. Backend on Render.com (Free Web Service)
-1. Go to [Render.com](https://render.com) and create a **New Web Service** connected to your GitHub repo.
-2. Configure settings:
-   - **Root Directory:** `backend`
-   - **Runtime:** `Python 3`
-   - **Build Command:** `pip install -r requirements.txt`
-   - **Start Command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-   - **Instance Type:** Free
-3. Add Environment Variables:
-   - `LLM_PROVIDER`: `gemini`
-   - `GEMINI_API_KEY`: `<your-gemini-api-key>`
-   - `GEMINI_MODEL`: `gemini-2.5-flash`
-4. Deploy and copy your service URL (e.g. `https://hasamex-backend.onrender.com`).
+| Component | Platform | Active Live Production URL |
+| :--- | :--- | :--- |
+| **Frontend Web Application** | **Vercel** | [https://hasamex-omega.vercel.app/](https://hasamex-omega.vercel.app/) |
+| **Backend API & Swagger Docs** | **Render** | [https://hasamex-backend-s17e.onrender.com/docs](https://hasamex-backend-s17e.onrender.com/docs) |
+| **Healthcheck Endpoint** | **Render** | [https://hasamex-backend-s17e.onrender.com/api/health](https://hasamex-backend-s17e.onrender.com/api/health) |
+| **Source Code Repository** | **GitHub** | [https://github.com/sankalp250/Hasamex-](https://github.com/sankalp250/Hasamex-) |
 
-#### 2. Frontend on Vercel.com (Free Edge CDN)
-1. Go to [Vercel.com](https://vercel.com) and import the repository.
-2. Configure settings:
-   - **Framework Preset:** `Vite`
-   - **Root Directory:** `frontend`
-   - **Build Command:** `npm run build`
-   - **Output Directory:** `dist`
-3. Add Environment Variable:
-   - `VITE_API_BASE_URL`: `https://hasamex-backend.onrender.com/api`
-4. Deploy and access your live site!
+### Reproduction / Deployment Steps:
+
+#### 1. Backend on Render.com (Python 3 Web Service)
+- **Root Directory:** `backend`
+- **Runtime:** `Python 3`
+- **Build Command:** `pip install -r requirements.txt`
+- **Start Command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+- **Environment Variables:**
+  - `LLM_PROVIDER`: `gemini`
+  - `GEMINI_API_KEY`: `<your-api-key>`
+  - `GEMINI_MODEL`: `gemini-2.5-flash`
+
+#### 2. Frontend on Vercel.com (Vite Single Page App)
+- **Root Directory:** `frontend`
+- **Framework Preset:** `Vite`
+- **Build Command:** `npm run build`
+- **Output Directory:** `dist`
+- **Environment Variable:**
+  - `VITE_API_BASE_URL`: `https://hasamex-backend-s17e.onrender.com/api`
 
 ---
 

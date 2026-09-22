@@ -5,8 +5,6 @@
 [![React](https://img.shields.io/badge/React-19.0-61DAFB.svg?logo=react)](https://react.dev)
 [![Vite](https://img.shields.io/badge/Vite-7.1-646CFF.svg?logo=vite)](https://vitejs.dev)
 [![Gemini](https://img.shields.io/badge/LLM-Gemini%202.5%20Flash-4285F4.svg?logo=google)](https://deepmind.google/technologies/gemini/)
-[![Pytest](https://img.shields.io/badge/tests-17%20passed-brightgreen.svg?logo=pytest)](https://docs.pytest.org)
-[![Vitest](https://img.shields.io/badge/frontend%20tests-passing-brightgreen.svg?logo=vitest)](https://vitest.dev)
 
 A production-grade Retrieval-Augmented Generation (RAG) platform purpose-built for the **Hasamex AI Engineer Case Study**. 
 

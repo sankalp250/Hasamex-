@@ -34,3 +34,6 @@ npm-debug.log*
 Thumbs.db
 .vscode/
 .idea/
+
+# Ignore workflows for OAuth token without workflow scope
+.github/

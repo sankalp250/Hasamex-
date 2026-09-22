@@ -1,8 +1,9 @@
-from __future__ import annotations
-
+import asyncio
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
+import httpx
 from fastapi import Depends, FastAPI, File, HTTPException, Request, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import func, select
@@ -28,7 +29,26 @@ def create_app(settings: Settings | None = None, provider_override=None) -> Fast
         seed_dir = Path(__file__).resolve().parents[1] / "data" / "transcripts"
         with session_factory() as session:
             container.seed_if_empty(session, seed_dir)
+
+        # Automatic keep-alive task to prevent Render free-tier from idling down
+        keep_alive_task = None
+        external_url = os.getenv("RENDER_EXTERNAL_URL") or os.getenv("KEEP_ALIVE_URL")
+        if external_url:
+            async def _keep_alive_loop():
+                health_url = f"{external_url.rstrip('/')}/api/health"
+                while True:
+                    await asyncio.sleep(600)  # Ping every 10 mins (Render sleeps after 15 mins)
+                    try:
+                        async with httpx.AsyncClient(timeout=10.0) as client:
+                            await client.get(health_url)
+                    except Exception:
+                        pass
+            keep_alive_task = asyncio.create_task(_keep_alive_loop())
+
         yield
+
+        if keep_alive_task:
+            keep_alive_task.cancel()
 
     app = FastAPI(
         title="Hasamex Expert Interview Analyzer",

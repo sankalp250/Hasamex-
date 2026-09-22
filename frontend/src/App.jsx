@@ -14,14 +14,28 @@ export default function App() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [guideData, setGuideData] = useState(null)
   const [crossData, setCrossData] = useState(null)
+  const [slowLoading, setSlowLoading] = useState(false)
 
-  async function loadTranscripts() {
-    const data = await api.listTranscripts()
-    setTranscripts(data)
+  async function loadTranscripts(retries = 3) {
+    try {
+      const data = await api.listTranscripts()
+      setTranscripts(data)
+      setError('')
+      setLoading(false)
+    } catch (err) {
+      if (retries > 0) {
+        setTimeout(() => loadTranscripts(retries - 1), 3500)
+      } else {
+        setError(err.message)
+        setLoading(false)
+      }
+    }
   }
 
   useEffect(() => {
-    loadTranscripts().catch((err) => setError(err.message)).finally(() => setLoading(false))
+    const timer = setTimeout(() => setSlowLoading(true), 3000)
+    loadTranscripts()
+    return () => clearTimeout(timer)
   }, [])
 
   async function onUpload(file) {
@@ -33,8 +47,17 @@ export default function App() {
   }
 
   function content() {
-    if (loading) return <div className="loading-state"><span className="spinner" /> Loading workspace…</div>
-    if (error) return <div className="error-state">{error}<div className="subtle">Make sure the FastAPI server is running on port 8000.</div></div>
+    if (loading) {
+      return (
+        <div className="loading-state">
+          <span className="spinner" />
+          {slowLoading
+            ? 'Connecting to server (waking up free-tier container, takes ~20–30s on cold start)…'
+            : 'Loading workspace…'}
+        </div>
+      )
+    }
+    if (error) return <div className="error-state">{error}<div className="subtle">Make sure the backend server is reachable.</div></div>
     if (active === 'guide') return <GuideView cachedData={guideData} onDataLoaded={setGuideData} />
     if (active === 'cross') return <CrossView cachedData={crossData} onDataLoaded={setCrossData} />
     if (active === 'ask') return <AskView transcripts={transcripts} />
